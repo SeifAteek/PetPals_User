@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { Heart, Calendar, ChevronRight, Plus, ArrowRight, Activity, Wind, Stethoscope, PawPrint, Zap, Star, Megaphone, MessageSquare, Sparkles, RefreshCw } from 'lucide-react';
+import { Heart, ChevronRight, Plus, ArrowRight, Activity, Wind, Stethoscope, PawPrint, Zap, Star, Megaphone, MessageSquare, Sparkles, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // ─── Fallback tips (rotate by day-of-year) ───────────────────────────────────
@@ -98,7 +98,6 @@ const DailyTip = () => {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 const UserDashboard = ({ user }) => {
     const [myPets,       setMyPets]       = useState([]);
-    const [appointments, setAppointments] = useState([]);
     const [applications, setApplications] = useState([]);
     const [loading,      setLoading]      = useState(true);
     const navigate = useNavigate();
@@ -109,15 +108,10 @@ const UserDashboard = ({ user }) => {
         const load = async () => {
             try {
                 setLoading(true);
-                const [petsRes, apptsRes, adopterRes] = await Promise.all([
+                const [petsRes, adopterRes] = await Promise.all([
                     supabase.from('pets').select('*').eq('owner_id', user.id),
-                    supabase.from('appointments').select('*, clinics(name, location)')
-                        .eq('user_id', user.id)
-                        .gte('appointment_date', new Date().toISOString())
-                        .order('appointment_date', { ascending: true }).limit(1),
                     supabase.from('adopter_profiles').select('adopter_id').eq('user_id', user.id).single(),
                 ]);
-                setAppointments(apptsRes.data || []);
                 let finalPets = petsRes.data || [];
                 
                 if (adopterRes.data?.adopter_id) {
@@ -145,7 +139,6 @@ const UserDashboard = ({ user }) => {
         load();
     }, [user]);
 
-    const nextAppt = appointments[0];
 
     return (
         <div className="p-6 md:p-10 space-y-8 pb-28 md:pb-12">
@@ -163,16 +156,13 @@ const UserDashboard = ({ user }) => {
                     <button onClick={() => navigate('/adopt')} className="flex items-center gap-2 px-5 py-3.5 bg-white border border-slate-100 text-slate-700 font-bold rounded-2xl shadow-soft hover:border-brand-200 transition-all active:scale-95 text-sm">
                         <PawPrint size={18} className="text-brand-600" /><span>Adopt</span>
                     </button>
-                    <button onClick={() => navigate('/appointments')} className="flex items-center gap-2 px-5 py-3.5 bg-brand-600 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/25 hover:bg-brand-700 transition-all active:scale-95 text-sm">
-                        <Plus size={18} /><span>Book Vet</span>
-                    </button>
                 </div>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-3 md:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
                 <StatCard label="My Pets"     value={loading ? '—' : myPets.length}       icon={<Heart size={22} fill="currentColor" />} bg="bg-red-50 text-red-500" />
-                <StatCard label="Upcoming"    value={loading ? '—' : appointments.length}  icon={<Calendar size={22} />}                  bg="bg-brand-50 text-brand-600" />
+                <StatCard label="Messages"    value={loading ? '—' : '0'}  icon={<MessageSquare size={22} />}                  bg="bg-brand-50 text-brand-600" />
                 <StatCard label="Applications" value={loading ? '—' : applications.length} icon={<Star size={22} />}                       bg="bg-amber-50 text-amber-500" />
             </div>
 
@@ -236,44 +226,17 @@ const UserDashboard = ({ user }) => {
             </section>
 
             {/* Widgets */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Appointment widget */}
-                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl">
-                    <div className="absolute -top-10 -right-10 w-48 h-48 bg-brand-500/20 blur-3xl rounded-full group-hover:bg-brand-500/30 transition-colors pointer-events-none" />
-                    <div className="relative z-10 flex flex-col gap-5">
-                        <div className="flex items-center justify-between">
-                            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><Calendar size={22} /></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-400">Next Visit</span>
-                        </div>
-                        {nextAppt ? (
-                            <>
-                                <div>
-                                    <h3 className="text-2xl font-black">{new Date(nextAppt.appointment_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</h3>
-                                    <p className="text-brand-300 font-bold text-sm mt-1">{nextAppt.clinics?.name}</p>
-                                    {nextAppt.clinics?.location && <p className="text-slate-400 text-xs mt-0.5">{nextAppt.clinics.location}</p>}
-                                </div>
-                                <button onClick={() => navigate('/appointments')} className="py-4 bg-white text-slate-900 font-bold rounded-2xl hover:bg-brand-50 transition-colors text-sm">View Details</button>
-                            </>
-                        ) : (
-                            <>
-                                <div>
-                                    <h3 className="text-xl font-black opacity-60 italic">No visits scheduled</h3>
-                                    <p className="text-slate-400 text-sm mt-1">Book a routine check-up.</p>
-                                </div>
-                                <button onClick={() => navigate('/appointments')} className="py-4 bg-white/10 border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-colors text-sm">Book Now</button>
-                            </>
-                        )}
-                    </div>
-                </div>
-
+            <div className="grid grid-cols-1 gap-6">
                 {/* Health wallet widget */}
-                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[2.5rem] p-8 text-white flex flex-col justify-between shadow-2xl shadow-emerald-600/20">
-                    <div>
-                        <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-5"><Stethoscope size={22} /></div>
-                        <h3 className="text-2xl font-black mb-2">Health Wallet</h3>
-                        <p className="text-emerald-100 font-medium text-sm leading-relaxed">Medical records, vaccinations, and diagnoses — all synced from your vets.</p>
+                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[2.5rem] p-8 text-white flex flex-col md:flex-row items-center justify-between shadow-2xl shadow-emerald-600/20 gap-6">
+                    <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0"><Stethoscope size={32} /></div>
+                        <div>
+                            <h3 className="text-2xl font-black mb-2">Health Wallet</h3>
+                            <p className="text-emerald-100 font-medium text-sm leading-relaxed max-w-md">Medical records, vaccinations, and diagnoses — all synced from your vets.</p>
+                        </div>
                     </div>
-                    <button onClick={() => navigate('/wallet')} className="mt-7 py-4 border-2 border-white/30 text-white font-bold rounded-2xl hover:bg-white/10 transition-colors text-sm">Open Wallet →</button>
+                    <button onClick={() => navigate('/wallet')} className="w-full md:w-auto px-8 py-4 border-2 border-white/30 text-white font-bold rounded-2xl hover:bg-white/10 transition-colors text-sm">Open Wallet →</button>
                 </div>
             </div>
 

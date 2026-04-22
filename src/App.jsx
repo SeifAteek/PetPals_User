@@ -3,15 +3,14 @@ import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, useLocation 
 import { supabase } from './supabaseClient';
 import { ToastProvider } from './components/Toast';
 import {
-    Home, Search, Heart, Calendar, Settings as SettingsIcon,
-    MessageSquare, Megaphone, Sparkles, ChevronRight, PlusCircle
+    Home, Search, Heart, Settings as SettingsIcon,
+    MessageSquare, Megaphone, Sparkles, ChevronRight
 } from 'lucide-react';
 
 import Auth             from './components/Auth';
 import UserDashboard    from './components/UserDashboard';
 import AdoptionHub      from './components/AdoptionHub';
 import PetWallet        from './components/PetWallet';
-import UserAppointments from './components/UserAppointments';
 import Settings         from './components/Settings';
 import Messages         from './components/Messages';
 import Campaigns        from './components/Campaigns';
@@ -22,7 +21,6 @@ const SIDEBAR_NAV = [
     { to: '/',             icon: <Home          size={20} />, label: 'Home'        },
     { to: '/adopt',        icon: <Search        size={20} />, label: 'Find a Pet'  },
     { to: '/wallet',       icon: <Heart         size={20} />, label: 'Pet Wallet'  },
-    { to: '/appointments', icon: <Calendar      size={20} />, label: 'Appointments' },
     { to: '/messages',     icon: <MessageSquare size={20} />, label: 'Messages'    },
     { to: '/campaigns',    icon: <Megaphone     size={20} />, label: 'Campaigns'   },
     { to: '/ai',           icon: <Sparkles      size={20} />, label: 'AI Assistant' },
@@ -40,7 +38,6 @@ const PAGE_TITLES = {
     '/':             'Home',
     '/adopt':        'Find a Pet',
     '/wallet':       'Pet Wallet',
-    '/appointments': 'Appointments',
     '/messages':     'Messages',
     '/campaigns':    'Campaigns',
     '/ai':           'AI Assistant',
@@ -91,7 +88,7 @@ const AppShell = ({ session }) => {
     };
 
     return (
-        <div className="h-screen bg-slate-50 flex flex-col md:flex-row overflow-hidden">
+        <div className="h-[100dvh] bg-slate-50 flex flex-col md:flex-row overflow-hidden">
 
             {/* ── Desktop Sidebar ── */}
             <aside className="hidden md:flex w-64 flex-col bg-white border-r border-slate-100 py-8 px-5">
@@ -162,7 +159,6 @@ const AppShell = ({ session }) => {
                         <Route path="/"             element={<UserDashboard    user={session.user} />} />
                         <Route path="/adopt"        element={<AdoptionHub      user={session.user} />} />
                         <Route path="/wallet"       element={<PetWallet        user={session.user} />} />
-                        <Route path="/appointments" element={<UserAppointments user={session.user} />} />
                         <Route path="/messages"     element={<Messages         user={session.user} />} />
                         <Route path="/campaigns"    element={<Campaigns        user={session.user} />} />
                         <Route path="/ai"           element={<AIAssistant />} />
@@ -171,12 +167,12 @@ const AppShell = ({ session }) => {
                     </Routes>
                 </div>
 
-                {/* Mobile FAB — quick book vet */}
+                {/* Floating Message Button */}
                 <NavLink
-                    to="/appointments"
-                    className="md:hidden fixed bottom-[84px] right-5 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl shadow-brand-600/40 flex items-center justify-center active:scale-95 transition-transform z-40"
+                    to="/messages"
+                    className="fixed bottom-[84px] md:bottom-10 right-5 md:right-10 w-14 h-14 bg-brand-600 text-white rounded-2xl shadow-2xl shadow-brand-600/40 flex items-center justify-center active:scale-95 transition-transform z-40"
                 >
-                    <PlusCircle size={26} />
+                    <MessageSquare size={26} />
                 </NavLink>
             </main>
 
