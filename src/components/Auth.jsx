@@ -52,10 +52,30 @@ const Auth = () => {
 
     const handleGoogleLogin = async () => {
         try {
+            // Determine the correct redirect URL
+            // Default to current origin (works for both localhost and production)
+            let redirectURL = window.location.origin;
+            
+            // Explicitly force the production domain if we're not on localhost
+            // This handles cases where window.location.origin might be unexpected
+            if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
+                redirectURL = 'https://petpals-kappa.vercel.app';
+            }
+            
+            // Use environment variable if provided
+            const siteUrl = import.meta.env.VITE_SITE_URL || redirectURL;
+            
+            // Ensure the URL ends with a trailing slash as Supabase often requires exact matches
+            const finalRedirect = siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`;
+
             const { error } = await supabase.auth.signInWithOAuth({ 
                 provider: 'google',
                 options: {
-                    redirectTo: import.meta.env.VITE_SITE_URL || window.location.origin
+                    redirectTo: finalRedirect,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    },
                 }
             });
             if (error) throw error;

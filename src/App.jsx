@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Routes, Route, NavLink, Navigate, useLocation 
 import { supabase } from './supabaseClient';
 import { ToastProvider } from './components/Toast';
 import {
-    Home, Search, Heart, Settings as SettingsIcon,
-    MessageSquare, Megaphone, Sparkles, ChevronRight
+    Home, Search, Heart, MessageSquare, Megaphone, Sparkles, ChevronRight, Calendar, Settings as SettingsIcon
 } from 'lucide-react';
 
 import Auth             from './components/Auth';
 import UserDashboard    from './components/UserDashboard';
 import AdoptionHub      from './components/AdoptionHub';
 import PetWallet        from './components/PetWallet';
+import UserAppointments from './components/UserAppointments';
 import Settings         from './components/Settings';
 import Messages         from './components/Messages';
 import Campaigns        from './components/Campaigns';
@@ -26,18 +26,11 @@ const SIDEBAR_NAV = [
     { to: '/ai',           icon: <Sparkles      size={20} />, label: 'AI Assistant' },
 ];
 
-const MOBILE_NAV = [
-    { to: '/',          icon: <Home          size={22} />, label: 'Home'     },
-    { to: '/adopt',     icon: <Search        size={22} />, label: 'Adopt'    },
-    { to: '/messages',  icon: <MessageSquare size={22} />, label: 'Messages' },
-    { to: '/campaigns', icon: <Megaphone     size={22} />, label: 'Donate'   },
-    { to: '/settings',  icon: <SettingsIcon  size={22} />, label: 'Settings' },
-];
-
 const PAGE_TITLES = {
     '/':             'Home',
     '/adopt':        'Find a Pet',
     '/wallet':       'Pet Wallet',
+    '/appointments': 'Appointments',
     '/messages':     'Messages',
     '/campaigns':    'Campaigns',
     '/ai':           'AI Assistant',
@@ -144,8 +137,8 @@ const AppShell = ({ session }) => {
                         <span className="text-lg font-black text-slate-900">PetPals</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <NavLink to="/wallet" className="w-9 h-9 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center">
-                            <Heart size={17} />
+                        <NavLink to="/ai" className="w-9 h-9 bg-violet-50 text-violet-600 rounded-xl flex items-center justify-center">
+                            <Sparkles size={17} />
                         </NavLink>
                         <NavLink to="/settings">
                             <Avatar />
@@ -159,6 +152,7 @@ const AppShell = ({ session }) => {
                         <Route path="/"             element={<UserDashboard    user={session.user} />} />
                         <Route path="/adopt"        element={<AdoptionHub      user={session.user} />} />
                         <Route path="/wallet"       element={<PetWallet        user={session.user} />} />
+                        <Route path="/appointments" element={<UserAppointments user={session.user} />} />
                         <Route path="/messages"     element={<Messages         user={session.user} />} />
                         <Route path="/campaigns"    element={<Campaigns        user={session.user} />} />
                         <Route path="/ai"           element={<AIAssistant />} />
@@ -178,7 +172,13 @@ const AppShell = ({ session }) => {
 
             {/* ── Mobile Bottom Nav ── */}
             <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 flex">
-                {MOBILE_NAV.map(({ to, icon, label }) => (
+                {[
+                    { to: '/',          icon: <Home          size={22} />, label: 'Home'     },
+                    { to: '/adopt',     icon: <Search        size={22} />, label: 'Adopt'    },
+                    { to: '/appointments', icon: <Calendar      size={22} />, label: 'Visits'  },
+                    { to: '/campaigns', icon: <Megaphone     size={22} />, label: 'Donate'   },
+                    { to: '/settings',  icon: <Avatar />,              label: 'You'      },
+                ].map(({ to, icon, label }) => (
                     <NavLink
                         key={to} to={to} end={to === '/'}
                         className={({ isActive }) =>
