@@ -12,7 +12,7 @@ function readInitialTheme(fallback) {
   if (typeof window === 'undefined') return fallback;
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return fallback;
 }
 
 export function ThemeProvider({ children, defaultTheme = 'light' }) {
