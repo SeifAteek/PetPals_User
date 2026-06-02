@@ -113,7 +113,7 @@ export default function LandingPage() {
       </section>
 
       {/* Project overview */}
-      <section id="overview" className="scroll-mt-28">
+      <section id="overview" className="scroll-mt-32">
         <div className="mb-10 max-w-2xl">
           <p className="text-xs font-black uppercase tracking-[0.25em] text-[var(--pp-blush)]">Overview</p>
           <h2 className="mt-2 text-3xl font-black md:text-4xl">What PetPals is</h2>
@@ -160,7 +160,7 @@ export default function LandingPage() {
       </section>
 
       {/* Live stats */}
-      <section id="stats" className="scroll-mt-28">
+      <section id="stats" className="scroll-mt-32">
         <div className="mb-10 text-center">
           <p className="text-xs font-black uppercase tracking-[0.25em] text-[var(--pp-blush)]">Community</p>
           <h2 className="mt-2 text-3xl font-black md:text-4xl">Platform at a glance</h2>
@@ -191,13 +191,13 @@ export default function LandingPage() {
       </section>
 
       {/* Partner portals */}
-      <section id="portals" className="scroll-mt-28">
+      <section id="portals" className="scroll-mt-32">
         <div className="mb-10 max-w-2xl">
           <p className="text-xs font-black uppercase tracking-[0.25em] text-[var(--pp-blush)]">Partner apps</p>
-          <h2 className="mt-2 text-3xl font-black md:text-4xl">Try the web portals</h2>
+          <h2 className="mt-2 text-3xl font-black md:text-4xl">Partner repositories</h2>
           <p className="mt-4 text-[var(--pp-text-secondary)]">
-            Each partner app is deployed on GitHub Pages — same liquid-glass UI and shared PetPals theme as the
-            mobile app palette.
+            Each app lives in its own GitHub repo — same liquid-glass UI and shared PetPals theme as the mobile
+            app palette.
           </p>
         </div>
 
@@ -206,32 +206,20 @@ export default function LandingPage() {
             const Icon = PORTAL_ICONS[portal.id] || ExternalLink;
             return (
               <article key={portal.id} className="pp-card flex flex-col p-6 md:p-8">
-                <div className="mb-4 flex items-start justify-between gap-3">
-                  <div className="pp-brand-gradient on-brand flex h-11 w-11 items-center justify-center rounded-full">
-                    <Icon size={20} className="keep-white" />
-                  </div>
-                  <a
-                    href={portal.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="pp-nav-idle inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold"
-                    title="View source"
-                  >
-                    <Code2 size={14} />
-                    Repo
-                  </a>
+                <div className="pp-brand-gradient on-brand mb-4 flex h-11 w-11 items-center justify-center rounded-full">
+                  <Icon size={20} className="keep-white" />
                 </div>
                 <h3 className="text-xl font-black">{portal.title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--pp-text-secondary)]">
                   {portal.description}
                 </p>
                 <a
-                  href={portal.pagesUrl}
+                  href={portal.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary mt-6 w-full sm:w-auto"
                 >
-                  {portal.external ? 'View on GitHub' : 'Open live demo'}
+                  View on GitHub
                   <ExternalLink size={16} />
                 </a>
               </article>

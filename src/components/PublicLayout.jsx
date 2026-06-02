@@ -10,10 +10,10 @@ export default function PublicLayout() {
   const isPetPage = pathname.startsWith('/pet');
 
   return (
-    <div className="relative flex min-h-[100dvh] flex-col text-[var(--pp-text-primary)]">
+    <div className="pp-public-shell relative flex min-h-[100dvh] flex-col text-[var(--pp-text-primary)]">
       <MeshBackground />
 
-      <header className="pp-header pp-header--float relative z-20 mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-6xl shrink-0 items-center px-6 md:px-8">
+      <header className="pp-header pp-header--float pp-public-header sticky top-3 z-30 mx-auto mt-3 flex w-[calc(100%-2rem)] max-w-6xl shrink-0 items-center px-6 md:px-8">
         <Link to="/" className="flex items-center gap-3">
           <div className="pp-brand-gradient on-brand flex h-10 w-10 items-center justify-center rounded-full shadow-glow">
             <Heart size={20} fill="currentColor" className="keep-white" />
@@ -47,7 +47,7 @@ export default function PublicLayout() {
         </nav>
       </header>
 
-      <main className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-6 md:px-6">
+      <main className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-4 md:px-6">
         <Outlet />
       </main>
 

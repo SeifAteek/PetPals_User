@@ -571,6 +571,18 @@ html.dark {
     box-shadow: var(--pp-shadow-raised);
   }
 
+  .pp-public-shell {
+    isolation: isolate;
+  }
+
+  .pp-public-header.pp-header--float {
+    top: 12px;
+    z-index: 30;
+    margin: 12px auto 0;
+    width: calc(100% - 2rem);
+    max-width: 72rem;
+  }
+
   .pp-main-area {
     position: relative;
     z-index: 10;
