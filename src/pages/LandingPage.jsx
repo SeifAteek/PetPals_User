@@ -1,46 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  Heart, Nfc, MapPin, ShoppingBag, Stethoscope, Sparkles,
-  Shield, Users, PawPrint, ArrowRight, Radio
+  Heart, Nfc, Sparkles, Shield, Users, PawPrint, ArrowRight, Radio,
+  Stethoscope, ShoppingBag, ExternalLink, Code2, Smartphone,
 } from 'lucide-react';
 import StatCounter from '../components/StatCounter';
 import { fetchPlatformStats, COUNT_QUERIES } from '../lib/platformStats';
+import { PARTNER_PORTALS, SITE_REPO } from '../config/portals';
 
 const STAT_META = {
-  users: { icon: Users, color: 'from-violet-500 to-purple-600' },
-  pets: { icon: PawPrint, color: 'from-brand-500 to-brand-700' },
-  shops: { icon: ShoppingBag, color: 'from-tangerine-500 to-orange-600' },
-  clinics: { icon: Stethoscope, color: 'from-emerald-500 to-teal-600' },
-  shelters: { icon: Heart, color: 'from-rose-500 to-pink-600' },
+  users: { icon: Users, tone: 'text-cerulean' },
+  pets: { icon: PawPrint, tone: 'text-[var(--pp-blush)]' },
+  shops: { icon: ShoppingBag, tone: 'text-cerulean' },
+  clinics: { icon: Stethoscope, tone: 'text-[var(--pp-cerulean)]' },
+  shelters: { icon: Heart, tone: 'text-[var(--pp-blush)]' },
 };
 
-const FEATURES = [
+const PORTAL_ICONS = {
+  clinic: Stethoscope,
+  shelter: Heart,
+  store: ShoppingBag,
+  ios: Smartphone,
+};
+
+const HIGHLIGHTS = [
   {
     icon: Nfc,
     title: 'NFC pet identity',
-    body: 'Each collar tag opens a beautiful public profile with pet details and owner contact — no app install required for finders.',
-  },
-  {
-    icon: MapPin,
-    title: 'Community tracking',
-    body: 'Smart collars and the PetPals mesh network help reunite lost pets with crowdsourced location signals.',
+    body: 'Program a collar tag in the iOS app. Anyone who taps it sees this site — no install required.',
   },
   {
     icon: Sparkles,
-    title: 'Adoption & AI matching',
-    body: 'Browse adoptable pets, apply in-app, and get compatibility insights powered by your lifestyle profile.',
+    title: 'One connected ecosystem',
+    body: 'Adopters use the mobile app. Clinics, shelters, and shops run dedicated web portals on the same Supabase backend.',
   },
   {
     icon: Shield,
-    title: 'Trusted care network',
-    body: 'Connect with verified clinics, shelters, and shops for appointments, donations, and everyday pet care.',
+    title: 'Safe public profiles',
+    body: 'Finders see pet details and owner contact you choose to share — not your full account.',
   },
 ];
 
 export default function LandingPage() {
   const [stats, setStats] = useState({});
   const [statsLoading, setStatsLoading] = useState(true);
+  const nfcExample = `${window.location.origin}${import.meta.env.BASE_URL.replace(/\/$/, '')}/pet?id=YOUR_PET_ID`.replace(/\/+/g, '/').replace(':/', '://');
 
   useEffect(() => {
     fetchPlatformStats()
@@ -49,182 +52,210 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden px-5 pb-20 pt-12 md:px-8 md:pb-28 md:pt-20">
-        <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2">
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand-200">
-              <Radio size={14} className="animate-pulse" />
-              Live community platform
-            </div>
+    <div className="space-y-16 md:space-y-24">
+      {/* Hero + NFC preview */}
+      <section className="grid items-center gap-12 lg:grid-cols-2 lg:gap-14">
+        <div className="space-y-6">
+          <span className="pp-glass-chip inline-flex">
+            <Radio size={12} className="animate-pulse" />
+            PetPals platform
+          </span>
 
-            <h1 className="text-4xl font-black leading-[1.05] tracking-tight md:text-6xl">
-              Every pet deserves a{' '}
-              <span className="bg-gradient-to-r from-brand-300 via-violet-300 to-tangerine-300 bg-clip-text text-transparent">
-                digital identity
-              </span>
-            </h1>
+          <h1 className="text-4xl font-black leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
+            Tap a tag.{' '}
+            <span className="bg-gradient-to-r from-[var(--pp-blush)] via-cerulean to-[var(--pp-navy)] bg-clip-text text-transparent">
+              Meet the pet.
+            </span>
+          </h1>
 
-            <p className="max-w-xl text-lg leading-relaxed text-slate-300">
-              PetPals connects loving owners, adoptable companions, vets, shelters, and shops in one ecosystem.
-              Tap an NFC tag to see who belongs to a collar — instantly, on any phone.
-            </p>
+          <p className="max-w-xl text-lg leading-relaxed text-[var(--pp-text-secondary)]">
+            PetPals is a graduation project connecting pet parents, adopters, clinics, shelters, and shops.
+            This site is the public face of every NFC scan — a lightweight profile finders can trust.
+          </p>
 
-            <div className="flex flex-wrap gap-4">
-              <a href="#stats" className="btn-primary !rounded-2xl !px-8 shadow-brand-600/30">
-                Explore the community
-                <ArrowRight size={18} />
-              </a>
-              <Link
-                to="/app"
-                className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-8 py-3.5 text-sm font-bold text-white transition hover:bg-white/10"
-              >
-                Sign in to portal
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero visual */}
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="absolute inset-4 rounded-[2rem] bg-gradient-to-br from-brand-600/40 to-violet-600/30 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-400">NFC scan preview</span>
-                <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-300">
-                  Live profile
-                </span>
-              </div>
-              <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900">
-                <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-500/20 text-brand-300">
-                    <PawPrint size={40} />
-                  </div>
-                  <p className="text-2xl font-black">Luna</p>
-                  <p className="text-sm text-slate-400">Golden Retriever · 3 yrs · Active</p>
-                </div>
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {['Age', 'Status', 'Species'].map((l) => (
-                  <div key={l} className="rounded-xl bg-white/5 px-3 py-2 text-center">
-                    <p className="text-[10px] font-bold uppercase text-slate-500">{l}</p>
-                    <p className="text-sm font-black text-white">—</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Owner contact</p>
-                <p className="mt-1 font-bold text-white">Available after NFC scan</p>
-              </div>
-            </div>
+          <div className="flex flex-wrap gap-3">
+            <a href="#portals" className="btn-primary">
+              Partner portals
+              <ArrowRight size={18} />
+            </a>
+            <a href="#overview" className="btn-secondary">
+              How NFC works
+            </a>
           </div>
         </div>
-      </section>
 
-      {/* Live stats */}
-      <section id="stats" className="scroll-mt-24 border-y border-white/10 bg-white/[0.02] px-5 py-16 md:px-8 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-12 text-center">
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-brand-300">Growing together</p>
-            <h2 className="mt-3 text-3xl font-black md:text-4xl">The PetPals community, in real time</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-              Registered members, pets, and partners across our platform — updated live from Supabase.
-            </p>
+        <div className="pp-card p-6 md:p-8">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-[var(--pp-text-muted)]">
+              NFC scan preview
+            </span>
+            <span className="pp-glass-chip">Live profile</span>
           </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {COUNT_QUERIES.map(({ key, label }) => {
-              const meta = STAT_META[key];
-              const Icon = meta.icon;
-              return (
-                <div
-                  key={key}
-                  className="group relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-6 backdrop-blur-md transition hover:border-white/20 hover:bg-slate-900/80"
-                >
-                  <div className={`mb-4 inline-flex rounded-2xl bg-gradient-to-br ${meta.color} p-3 shadow-lg`}>
-                    <Icon size={22} className="text-white" />
-                  </div>
-                  <p className="text-4xl font-black text-white md:text-5xl">
-                    {statsLoading ? (
-                      <span className="inline-block h-10 w-16 animate-pulse rounded-lg bg-white/10" />
-                    ) : (
-                      <StatCounter value={stats[key]} />
-                    )}
-                  </p>
-                  <p className="mt-2 text-sm font-bold text-slate-300">{label}</p>
-                </div>
-              );
-            })}
+          <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-[var(--pp-r-2xl)] bg-[var(--pp-card-bg)] p-8 text-center">
+            <div className="pp-liquid-glass pp-liquid-glass--pill pp-liquid-glass--resting flex h-20 w-20 items-center justify-center">
+              <PawPrint size={36} className="text-[var(--pp-blush)]" />
+            </div>
+            <p className="text-2xl font-black">Luna</p>
+            <p className="text-sm text-[var(--pp-text-muted)]">Golden Retriever · 3 yrs · Active</p>
           </div>
-
-          {Object.values(stats).some((v) => v == null) && !statsLoading && (
-            <p className="mt-6 text-center text-xs text-slate-500">
-              Some counts are hidden by database permissions. Sign in as admin or enable public read policies to show all stats.
-            </p>
-          )}
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how-it-works" className="scroll-mt-24 px-5 py-16 md:px-8 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-14 max-w-2xl">
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-tangerine-400">How it works</p>
-            <h2 className="mt-3 text-3xl font-black md:text-4xl">From NFC tap to peace of mind</h2>
-            <p className="mt-4 text-slate-400 leading-relaxed">
-              Program your pet&apos;s tag in the PetPals iOS app with a link like{' '}
-              <code className="rounded-lg bg-white/10 px-2 py-0.5 text-sm text-brand-200">
-                petpals-kappa.vercel.app/pet?id=…
-              </code>
-              . Anyone who scans it sees this website — the same trusted profile view as in the app.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {FEATURES.map(({ icon: Icon, title, body }) => (
-              <article
-                key={title}
-                className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-transparent p-8 transition hover:border-brand-500/30"
-              >
-                <div className="mb-5 inline-flex rounded-2xl bg-brand-500/15 p-3 text-brand-300">
-                  <Icon size={26} />
-                </div>
-                <h3 className="text-xl font-black">{title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-400">{body}</p>
-              </article>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {['Age', 'Species', 'Status'].map((label) => (
+              <div key={label} className="pp-auto-glass rounded-[var(--pp-r-lg)] px-3 py-2 text-center">
+                <p className="text-[10px] font-bold uppercase text-[var(--pp-text-muted)]">{label}</p>
+                <p className="text-sm font-black">—</p>
+              </div>
             ))}
           </div>
+          <p className="mt-4 text-center text-xs text-[var(--pp-text-muted)]">
+            Real pets load from Supabase when you scan a programmed tag.
+          </p>
+        </div>
+      </section>
 
-          <ol className="mt-14 grid gap-4 md:grid-cols-3">
+      {/* Project overview */}
+      <section id="overview" className="scroll-mt-28">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-xs font-black uppercase tracking-[0.25em] text-[var(--pp-blush)]">Overview</p>
+          <h2 className="mt-2 text-3xl font-black md:text-4xl">What PetPals is</h2>
+          <p className="mt-4 leading-relaxed text-[var(--pp-text-secondary)]">
+            A full-stack pet-care platform: iOS app for adopters, web portals for business partners, and this
+            public site for NFC collar profiles. Everything shares one Supabase database (pets, appointments,
+            adoptions, shops, and more).
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {HIGHLIGHTS.map(({ icon: Icon, title, body }) => (
+            <article key={title} className="pp-card p-6 md:p-8">
+              <div className="pp-liquid-glass pp-liquid-glass--md pp-liquid-glass--resting mb-4 inline-flex p-3 text-[var(--pp-blush)]">
+                <Icon size={24} />
+              </div>
+              <h3 className="text-lg font-black">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--pp-text-secondary)]">{body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="pp-card mt-8 p-6 md:p-8">
+          <p className="text-xs font-black uppercase tracking-widest text-[var(--pp-text-muted)]">NFC URL format</p>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--pp-text-secondary)]">
+            In the PetPals iOS app, copy your pet&apos;s link and write it to any NFC sticker or collar chip:
+          </p>
+          <code className="mt-4 block break-all rounded-[var(--pp-r-lg)] border border-[var(--pp-card-border)] bg-[var(--pp-input-bg)] px-4 py-3 text-sm font-semibold text-[var(--pp-cerulean)]">
+            {nfcExample}
+          </code>
+          <ol className="mt-6 grid gap-3 text-sm text-[var(--pp-text-secondary)] md:grid-cols-3">
             {[
-              ['01', 'Register your pet', 'Add your companion in the PetPals app with photos and health details.'],
-              ['02', 'Write the NFC tag', 'Copy your pet\'s URL from the app and program any NFC sticker or collar.'],
-              ['03', 'Share safely', 'Finders see pet info and how to reach you — without exposing your full account.'],
-            ].map(([step, title, body]) => (
-              <li key={step} className="rounded-2xl border border-dashed border-white/15 p-6">
-                <span className="text-3xl font-black text-brand-500/50">{step}</span>
-                <h4 className="mt-2 font-black">{title}</h4>
-                <p className="mt-2 text-sm text-slate-400">{body}</p>
+              'Register your pet in the iOS app with photos and details.',
+              'Copy the public URL and program your NFC tag.',
+              'Finders tap the tag and see this profile instantly.',
+            ].map((step, i) => (
+              <li key={step} className="pp-auto-glass rounded-[var(--pp-r-xl)] border border-dashed p-4">
+                <span className="text-2xl font-black text-[var(--pp-blush)]">{String(i + 1).padStart(2, '0')}</span>
+                <p className="mt-2">{step}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-5 pb-24 md:px-8">
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-brand-500/20 bg-gradient-to-br from-brand-600/30 via-violet-600/20 to-slate-900 p-10 text-center md:p-16">
-          <h2 className="text-3xl font-black md:text-4xl">Ready to protect your best friend?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-slate-300">
-            Download PetPals on iOS, set up your pet profile, and link your NFC collar in minutes.
+      {/* Live stats */}
+      <section id="stats" className="scroll-mt-28">
+        <div className="mb-10 text-center">
+          <p className="text-xs font-black uppercase tracking-[0.25em] text-[var(--pp-blush)]">Community</p>
+          <h2 className="mt-2 text-3xl font-black md:text-4xl">Platform at a glance</h2>
+          <p className="mx-auto mt-3 max-w-xl text-[var(--pp-text-secondary)]">
+            Live counts from Supabase when public read policies allow.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/app" className="btn-primary !rounded-2xl">
-              Go to member portal
-              <ArrowRight size={18} />
-            </Link>
-          </div>
         </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {COUNT_QUERIES.map(({ key, label }) => {
+            const meta = STAT_META[key];
+            const Icon = meta.icon;
+            return (
+              <div key={key} className="pp-card p-6 text-center">
+                <Icon size={22} className={`mx-auto mb-3 ${meta.tone}`} />
+                <p className="text-4xl font-black md:text-5xl">
+                  {statsLoading ? (
+                    <span className="inline-block h-10 w-16 animate-pulse rounded-[var(--pp-r-md)] bg-[var(--pp-card-bg)]" />
+                  ) : (
+                    <StatCounter value={stats[key]} />
+                  )}
+                </p>
+                <p className="mt-2 text-sm font-bold text-[var(--pp-text-secondary)]">{label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Partner portals */}
+      <section id="portals" className="scroll-mt-28">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-xs font-black uppercase tracking-[0.25em] text-[var(--pp-blush)]">Partner apps</p>
+          <h2 className="mt-2 text-3xl font-black md:text-4xl">Try the web portals</h2>
+          <p className="mt-4 text-[var(--pp-text-secondary)]">
+            Each partner app is deployed on GitHub Pages — same liquid-glass UI and shared PetPals theme as the
+            mobile app palette.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {PARTNER_PORTALS.map((portal) => {
+            const Icon = PORTAL_ICONS[portal.id] || ExternalLink;
+            return (
+              <article key={portal.id} className="pp-card flex flex-col p-6 md:p-8">
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div className="pp-brand-gradient on-brand flex h-11 w-11 items-center justify-center rounded-full">
+                    <Icon size={20} className="keep-white" />
+                  </div>
+                  <a
+                    href={portal.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pp-nav-idle inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold"
+                    title="View source"
+                  >
+                    <Code2 size={14} />
+                    Repo
+                  </a>
+                </div>
+                <h3 className="text-xl font-black">{portal.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-[var(--pp-text-secondary)]">
+                  {portal.description}
+                </p>
+                <a
+                  href={portal.pagesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary mt-6 w-full sm:w-auto"
+                >
+                  {portal.external ? 'View on GitHub' : 'Open live demo'}
+                  <ExternalLink size={16} />
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="pp-card overflow-hidden p-8 text-center md:p-12">
+        <h2 className="text-2xl font-black md:text-3xl">Built for real pet care workflows</h2>
+        <p className="mx-auto mt-4 max-w-xl text-[var(--pp-text-secondary)]">
+          Graduation project by Seif Ateek — NFC identity, adoption matching, clinic &amp; shelter operations,
+          and pet retail in one ecosystem.
+        </p>
+        <a
+          href={SITE_REPO}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-secondary mt-8 inline-flex"
+        >
+          <Code2 size={18} />
+          PetPals_User on GitHub
+        </a>
       </section>
     </div>
   );
