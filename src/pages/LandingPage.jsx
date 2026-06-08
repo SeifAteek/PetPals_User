@@ -3,6 +3,7 @@ import {
   Heart, Nfc, Sparkles, Shield, Users, PawPrint, ArrowRight, Radio,
   Stethoscope, ShoppingBag, ExternalLink, Code2, Smartphone,
 } from 'lucide-react';
+import PetPalsLogo from '@petpals/theme/PetPalsLogo.jsx';
 import StatCounter from '../components/StatCounter';
 import { fetchPlatformStats, COUNT_QUERIES } from '../lib/platformStats';
 import { PARTNER_PORTALS, SITE_REPO } from '../config/portals';
@@ -56,6 +57,7 @@ export default function LandingPage() {
       {/* Hero + NFC preview */}
       <section className="grid items-center gap-12 lg:grid-cols-2 lg:gap-14">
         <div className="space-y-6">
+          <PetPalsLogo size="lg" />
           <span className="pp-glass-chip inline-flex">
             <Radio size={12} className="animate-pulse" />
             PetPals platform

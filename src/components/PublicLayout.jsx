@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Heart, Nfc, Code2 } from 'lucide-react';
+import { Nfc, Code2 } from 'lucide-react';
+import { PetPalsBrand } from '@petpals/theme/PetPalsLogo.jsx';
 import MeshBackground from '@petpals/theme/MeshBackground.jsx';
 import ThemeToggle from '@petpals/theme/ThemeToggle.jsx';
 import { SITE_REPO } from '../config/portals';
@@ -15,15 +16,7 @@ export default function PublicLayout() {
 
       <header className="pp-header pp-header--float pp-public-header sticky top-3 z-30 mx-auto mt-3 flex w-[calc(100%-2rem)] max-w-6xl shrink-0 items-center px-6 md:px-8">
         <Link to="/" className="flex items-center gap-3">
-          <div className="pp-brand-gradient on-brand flex h-10 w-10 items-center justify-center rounded-full shadow-glow">
-            <Heart size={20} fill="currentColor" className="keep-white" />
-          </div>
-          <div>
-            <p className="text-lg font-black tracking-tight">PetPals</p>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--pp-text-muted)]">
-              NFC pet profiles
-            </p>
-          </div>
+          <PetPalsBrand logoSize="md" subtitle="NFC pet profiles" />
         </Link>
 
         <nav className="ml-auto flex items-center gap-2 md:gap-3">
