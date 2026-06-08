@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { Heart, Mail, Lock, Globe, Loader2, ArrowRight } from 'lucide-react';
 
@@ -203,7 +204,14 @@ const Auth = () => {
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                            <div className="flex items-center justify-between ml-1">
+                                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Password</label>
+                                {isLogin && (
+                                    <Link to="/forgot-password" className="text-xs font-bold text-brand-600 hover:underline">
+                                        Forgot password?
+                                    </Link>
+                                )}
+                            </div>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
                                 <input 
